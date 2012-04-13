@@ -23,11 +23,18 @@ Source11:	quantum-linuxbridge-agent.init
 Source12:	quantum-openvswitch-agent.init
 Source13:	quantum-ryu-agent.init
 
+# This is EPEL specific and not upstream
+Patch100:         openstack-quantum-newdeps.patch
 
 BuildArch:	noarch
 
 BuildRequires:	python2-devel
 BuildRequires:	python-setuptools
+# Build require these 2 parallel versions
+# as setup.py build imports quantum.openstack.common.setup
+# which will then check for these
+BuildRequires:	python-sqlalchemy0.7
+BuildRequires:	python-webob1.0
 BuildRequires:	dos2unix
 
 Requires:	python-quantum = %{version}-%{release}
@@ -63,8 +70,8 @@ Requires:	python-gflags
 Requires:	python-anyjson
 Requires:	python-paste-deploy
 Requires:	python-routes
-Requires:	python-sqlalchemy
-Requires:	python-webob
+Requires:	python-sqlalchemy0.7
+Requires:	python-webob1.0
 
 
 %description -n python-quantum
@@ -155,6 +162,9 @@ networks using the Ryu Network Operating System.
 
 %prep
 %setup -q -n quantum-%{version}
+
+# Apply EPEL patch
+%patch100 -p1
 
 find quantum -name \*.py -exec sed -i '/\/usr\/bin\/env python/d' {} \;
 
