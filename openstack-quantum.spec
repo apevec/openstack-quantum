@@ -126,7 +126,6 @@ Summary:	Quantum openvswitch plugin
 Group:		Applications/System
 
 Requires:	openstack-quantum = %{version}-%{release}
-Requires:	openvswitch
 Requires:	sudo
 
 
