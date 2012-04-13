@@ -342,7 +342,6 @@ fi
 %doc LICENSE
 %doc README
 %{python_sitelib}/quantum/*
-%exclude %{python_sitelib}/quantum/__init__.*
 %exclude %{python_sitelib}/quantum/extensions/_credential_view.py*
 %exclude %{python_sitelib}/quantum/extensions/portprofile.py*
 %exclude %{python_sitelib}/quantum/extensions/novatenant.py*
