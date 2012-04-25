@@ -1,7 +1,7 @@
 diff -Naur quantum-2012.1.orig/quantum/__init__.py quantum-2012.1/quantum/__init__.py
---- quantum-2012.1.orig/quantum/__init__.py	2012-04-13 16:19:49.820823445 +0000
-+++ quantum-2012.1/quantum/__init__.py	2012-04-13 16:22:26.345010942 +0000
-@@ -15,5 +15,27 @@
+--- quantum-2012.1.orig/quantum/__init__.py	2012-04-25 12:30:18.110482493 +0000
++++ quantum-2012.1/quantum/__init__.py	2012-04-25 12:31:34.397515453 +0000
+@@ -15,5 +15,36 @@
  #    License for the specific language governing permissions and limitations
  #    under the License.
  
@@ -26,6 +26,14 @@ diff -Naur quantum-2012.1.orig/quantum/__init__.py quantum-2012.1/quantum/__init
 +
 +replace_dist("WebOb >= 1.0")
 +replace_dist("SQLAlchemy >= 0.6.3")
++replace_dist("Routes >= 1.12.3")
++
++replace_dist("PasteDeploy >= 1.5.0")
++# This hack is needed because replace_dist() results in
++# the standard paste module path being at the start of __path__.
++# TODO: See can we get pkg_resources to do the right thing directly
++import paste
++paste.__path__.insert(0, paste.__path__.pop(-1))
 +
  from pkgutil import extend_path
  __path__ = extend_path(__path__, __name__)

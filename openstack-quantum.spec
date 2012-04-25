@@ -4,7 +4,7 @@
 
 Name:		openstack-quantum
 Version:	2012.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Virtual network service for OpenStack (quantum)
 
 Group:		Applications/System
@@ -68,8 +68,8 @@ Requires:	python-eventlet
 Requires:	python-lxml
 Requires:	python-gflags
 Requires:	python-anyjson
-Requires:	python-paste-deploy
-Requires:	python-routes
+Requires:	python-paste-deploy1.5
+Requires:	python-routes1.12
 Requires:	python-sqlalchemy0.7
 Requires:	python-webob1.0
 
@@ -419,5 +419,8 @@ fi
 
 
 %changelog
+* Wed Apr 25 2012 Pádraig Brady <P@draigBrady.com> - 2012.1-2
+- Use parallel installed versions of python-routes and python-paste-deploy
+
 * Thu Apr 12 2012 Pádraig Brady <pbrady@redhat.com> - 2012.1-1
 - Initial essex release
