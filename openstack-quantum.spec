@@ -30,11 +30,13 @@ BuildArch:	noarch
 
 BuildRequires:	python2-devel
 BuildRequires:	python-setuptools
-# Build require these 2 parallel versions
+# Build require these parallel versions
 # as setup.py build imports quantum.openstack.common.setup
 # which will then check for these
 BuildRequires:	python-sqlalchemy0.7
 BuildRequires:	python-webob1.0
+BuildRequires:	python-paste-deploy1.5
+BuildRequires:	python-routes1.12
 BuildRequires:	dos2unix
 
 Requires:	python-quantum = %{version}-%{release}
