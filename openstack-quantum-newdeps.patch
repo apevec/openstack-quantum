@@ -1,7 +1,7 @@
 diff -Naur quantum-2012.1.orig/quantum/__init__.py quantum-2012.1/quantum/__init__.py
 --- quantum-2012.1.orig/quantum/__init__.py	2012-04-25 12:30:18.110482493 +0000
 +++ quantum-2012.1/quantum/__init__.py	2012-04-25 12:31:34.397515453 +0000
-@@ -15,5 +15,36 @@
+@@ -15,5 +15,35 @@
  #    License for the specific language governing permissions and limitations
  #    under the License.
  
