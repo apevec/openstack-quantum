@@ -2,7 +2,7 @@
 #
 # quantum-openvswitch-agent  OpenStack Open vSwitch plugin
 #
-# chkconfig:   - 20 80
+# chkconfig:   - 98 02
 # description: Support virtual networks using Open vSwitch
 ### END INIT INFO
 

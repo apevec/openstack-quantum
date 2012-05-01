@@ -2,7 +2,7 @@
 #
 # quantum  OpenStack Software Defined Networking Service
 #
-# chkconfig:   - 20 80
+# chkconfig:   - 98 02
 # description: quantum provides an API to  \
 #		* request and configure virtual networks
 ### END INIT INFO

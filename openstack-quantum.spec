@@ -4,7 +4,7 @@
 
 Name:		openstack-quantum
 Version:	2012.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Virtual network service for OpenStack (quantum)
 
 Group:		Applications/System
@@ -421,6 +421,9 @@ fi
 
 
 %changelog
+* Tue May 01 2012 Pádraig Brady <P@draigBrady.com> - 2012.1-3
+- Start the services later in the boot sequence
+
 * Wed Apr 25 2012 Pádraig Brady <P@draigBrady.com> - 2012.1-2
 - Use parallel installed versions of python-routes and python-paste-deploy
 

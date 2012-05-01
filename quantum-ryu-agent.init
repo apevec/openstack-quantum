@@ -2,7 +2,7 @@
 #
 # quantum-ryu-agent  OpenStack Ryu Network OS plugin
 #
-# chkconfig:   - 20 80
+# chkconfig:   - 98 02
 # description: Support virtual networks using Ryu Network OS
 ### END INIT INFO
 
