@@ -4,7 +4,7 @@
 
 Name:		openstack-quantum
 Version:	2012.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Virtual network service for OpenStack (quantum)
 
 Group:		Applications/System
@@ -421,6 +421,9 @@ fi
 
 
 %changelog
+* Mon May 07 2012 Pádraig Brady <P@draigBrady.com> - 2012.1-4
+- Fix handling of the mysql service in quantum-server-setup
+
 * Tue May 01 2012 Pádraig Brady <P@draigBrady.com> - 2012.1-3
 - Start the services later in the boot sequence
 
