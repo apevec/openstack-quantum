@@ -4,7 +4,7 @@
 
 Name:		openstack-quantum
 Version:	2012.1
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Virtual network service for OpenStack (quantum)
 
 Group:		Applications/System
@@ -14,7 +14,6 @@ URL:		http://launchpad.net/quantum/
 Source0:	https://launchpad.net/quantum/essex/2012.1/+download/quantum-2012.1.tar.gz
 Source1:	quantum.logrotate
 Source2:	quantum-sudoers
-Source3:	quantum-config-set
 Source4:	quantum-server-setup
 Source5:	quantum-node-setup
 
@@ -40,6 +39,7 @@ BuildRequires:	python-routes1.12
 BuildRequires:	dos2unix
 
 Requires:	python-quantum = %{version}-%{release}
+Requires:	openstack-utils
 
 Requires(post):   chkconfig
 Requires(postun): initscripts
@@ -226,7 +226,6 @@ install -d -m 755 %{buildroot}%{_localstatedir}/log/quantum
 install -d -m 755 %{buildroot}%{_localstatedir}/run/quantum
 
 # Install setup helper scripts
-install -p -D -m 755 %{SOURCE3} %{buildroot}%{_bindir}/quantum-config-set
 install -p -D -m 755 %{SOURCE4} %{buildroot}%{_bindir}/quantum-server-setup
 install -p -D -m 755 %{SOURCE5} %{buildroot}%{_bindir}/quantum-node-setup
 
@@ -324,7 +323,6 @@ fi
 %doc README
 %{_bindir}/quantum-server
 %{_bindir}/quantum-rootwrap
-%{_bindir}/quantum-config-set
 %{_bindir}/quantum-server-setup
 %{_bindir}/quantum-node-setup
 %{_initrddir}/quantum-server
@@ -421,6 +419,9 @@ fi
 
 
 %changelog
+* Mon May 28 2012 Pádraig Brady <P@draigBrady.com> - 2012.1-5
+- Fix helper scripts to use the always available openstack-config util
+
 * Mon May 07 2012 Pádraig Brady <P@draigBrady.com> - 2012.1-4
 - Fix handling of the mysql service in quantum-server-setup
 
