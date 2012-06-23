@@ -18,9 +18,13 @@ Source4:	quantum-server-setup
 Source5:	quantum-node-setup
 
 Source10:	quantum-server.init
+Source20:	quantum-server.upstart
 Source11:	quantum-linuxbridge-agent.init
+Source21:	quantum-linuxbridge-agent.upstart
 Source12:	quantum-openvswitch-agent.init
+Source22:	quantum-openvswitch-agent.upstart
 Source13:	quantum-ryu-agent.init
+Source23:	quantum-ryu-agent.upstart
 
 # This is EPEL specific and not upstream
 Patch100:         openstack-quantum-newdeps.patch
@@ -221,6 +225,7 @@ install -p -D -m 755 %{SOURCE12} %{buildroot}%{_initrddir}/quantum-openvswitch-a
 install -p -D -m 755 %{SOURCE13} %{buildroot}%{_initrddir}/quantum-ryu-agent
 
 # Setup directories
+install -d -m 755 %{buildroot}%{_datadir}/quantum
 install -d -m 755 %{buildroot}%{_sharedstatedir}/quantum
 install -d -m 755 %{buildroot}%{_localstatedir}/log/quantum
 install -d -m 755 %{buildroot}%{_localstatedir}/run/quantum
@@ -229,6 +234,11 @@ install -d -m 755 %{buildroot}%{_localstatedir}/run/quantum
 install -p -D -m 755 %{SOURCE4} %{buildroot}%{_bindir}/quantum-server-setup
 install -p -D -m 755 %{SOURCE5} %{buildroot}%{_bindir}/quantum-node-setup
 
+# Install upstart jobs examples
+install -p -m 644 %{SOURCE20} %{buildroot}%{_datadir}/quantum/
+install -p -m 644 %{SOURCE21} %{buildroot}%{_datadir}/quantum/
+install -p -m 644 %{SOURCE22} %{buildroot}%{_datadir}/quantum/
+install -p -m 644 %{SOURCE23} %{buildroot}%{_datadir}/quantum/
 
 %pre
 getent group quantum >/dev/null || groupadd -r quantum --gid 164
@@ -326,6 +336,8 @@ fi
 %{_bindir}/quantum-server-setup
 %{_bindir}/quantum-node-setup
 %{_initrddir}/quantum-server
+%dir %{_datadir}/quantum
+%{_datadir}/quantum/quantum-server.upstart
 %dir %{_sysconfdir}/quantum
 %config(noreplace) %{_sysconfdir}/quantum/quantum.conf
 %config(noreplace) %{_sysconfdir}/quantum/plugins.ini
@@ -382,6 +394,7 @@ fi
 %doc quantum/plugins/linuxbridge/README
 %{_bindir}/quantum-linuxbridge-agent
 %{_initrddir}/quantum-linuxbridge-agent
+%{_datadir}/quantum/quantum-linuxbridge-agent.upstart
 %{python_sitelib}/quantum/plugins/linuxbridge
 %{python_sitelib}/quantum/rootwrap/linuxbridge-agent.py*
 %dir %{_sysconfdir}/quantum/plugins/linuxbridge
@@ -401,6 +414,7 @@ fi
 %doc quantum/plugins/openvswitch/README
 %{_bindir}/quantum-openvswitch-agent
 %{_initrddir}/quantum-openvswitch-agent
+%{_datadir}/quantum/quantum-openvswitch-agent.upstart
 %{python_sitelib}/quantum/plugins/openvswitch
 %{python_sitelib}/quantum/rootwrap/openvswitch-agent.py*
 %dir %{_sysconfdir}/quantum/plugins/openvswitch
@@ -412,6 +426,7 @@ fi
 %doc quantum/plugins/ryu/README
 %{_bindir}/quantum-ryu-agent
 %{_initrddir}/quantum-ryu-agent
+%{_datadir}/quantum/quantum-ryu-agent.upstart
 %{python_sitelib}/quantum/plugins/ryu
 %{python_sitelib}/quantum/rootwrap/ryu-agent.py*
 %dir %{_sysconfdir}/quantum/plugins/ryu
