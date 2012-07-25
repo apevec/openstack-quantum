@@ -4,14 +4,14 @@
 
 Name:		openstack-quantum
 Version:	2012.1
-Release:	2%{?dist}
+Release:	4%{?dist}
 Summary:	Virtual network service for OpenStack (quantum)
 
 Group:		Applications/System
 License:	ASL 2.0
 URL:		http://launchpad.net/quantum/
 
-Source0:	https://launchpad.net/quantum/essex/2012.1/+download/quantum-2012.1.tar.gz
+Source0:	http://tarballs.openstack.org/quantum/quantum-2012.1~20120715.784.tar.gz
 Source1:	quantum.logrotate
 Source2:	quantum-sudoers
 Source4:	quantum-server-setup
@@ -398,6 +398,9 @@ fi
 
 
 %changelog
+* Wed Jul 25 2012 Robert Kukura <rkukura@redhat.com> - 2012.1-4
+- Update to 20120715 essex stable branch snapshot
+
 * Mon May 28 2012 Pádraig Brady <P@draigBrady.com> - 2012.1-2
 - Fix helper scripts to use the always available openstack-config util
 
