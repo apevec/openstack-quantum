@@ -4,7 +4,7 @@
 
 Name:		openstack-quantum
 Version:	2012.1
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Virtual network service for OpenStack (quantum)
 
 Group:		Applications/System
@@ -398,7 +398,7 @@ fi
 
 
 %changelog
-* Sun Aug 12 2012 Robert Kukura <rkukura@redhat.com> - 2012.1-5
+* Sun Aug 12 2012 Robert Kukura <rkukura@redhat.com> - 2012.1-6
 - Update setup scripts for new DB configuration valiable
 
 * Wed Jul 25 2012 Robert Kukura <rkukura@redhat.com> - 2012.1-4
