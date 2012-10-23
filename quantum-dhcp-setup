@@ -24,9 +24,9 @@ declare -a SUPPORTED_PLUGINS=(linuxbridge openvswitch)
 usage() {
 
 cat << EOF
-The helper script will install the necessary support for the selected plugin.
+The helper script will install the necessary support for the DHCP agent.
 
-Usage: quantum-node-setup [options]
+Usage: quantum-dhcp-setup [options]
 Options:
 	--help        | -h
 		Print usage information.
@@ -34,7 +34,7 @@ Options:
                 The quantum plugin. Supported plugins:-
                     ${SUPPORTED_PLUGINS[*]}
         --qhost       | -q
-		The Quantum hostname (assumes that this is also the QPID host).
+                The Quantum hostname (assumes that this is also the QPID host).
 EOF
 
 	exit 0
@@ -50,12 +50,7 @@ is_valid_plugin() {
 	return 1
 }
 
-QUANTUM_USER=quantum
-LB_CONF=/etc/quantum/plugins/linuxbridge/linuxbridge_conf.ini
-OVS_CONF=/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini
-
-# Nova specific
-NOVA_CONF=/etc/nova/nova.conf
+DHCP_CONF=/etc/quantum/dhcp_agent.ini
 
 while [ $# -gt 0 ]
 do
@@ -96,12 +91,6 @@ fi
 
 echo "Quantum plugin: ${QUANTUM_PLUGIN}"
 
-if ! [ -e "/etc/quantum/plugins/${QUANTUM_PLUGIN}" ]; then
-	echo "Please install the ${QUANTUM_PLUGIN} quantum plugin"
-        exit 0
-fi
-
-#if the database hostname and is not defined and is required
 if [ -z ${Q_HOST} ] ; then
     echo "Please enter the Quantum hostname:"
     read Q_HOST
@@ -115,7 +104,7 @@ openstack-config --set ${Q_CONF} DEFAULT qpid_hostname ${Q_HOST}
 
 case "${QUANTUM_PLUGIN}" in
 "linuxbridge")
-        LIBVIRT_VIF_DRIVER=nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver
+        LINUX_INTERFACE_DRIVER=quantum.agent.linux.interface.BridgeInterfaceDriver
 ;;
 
 "openvswitch")
@@ -124,47 +113,24 @@ case "${QUANTUM_PLUGIN}" in
                 echo "Please install openvswitch"
                 exit 0
         fi
+        LINUX_INTERFACE_DRIVER=quantum.agent.linux.interface.OVSInterfaceDriver
 ;;
 
-esac
-
-echo "Would you like to update the nova configuration files? (y/n): "
-read response
-case "$response" in
-y|Y)
-        ;;
-*)
-        echo "Complete!"
-        exit 0
 esac
 
 # Keystone specific
 OS_USERNAME=${OS_USERNAME:-quantum}
 OS_PASSWORD=${OS_PASSWORD:-servicepass}
-OS_AUTH_URL=${OS_AUTH_URL:-http://127.0.0.1:35357/v2.0/}
+OS_AUTH_URL=${OS_AUTH_URL:-http://localhost:35357/v2.0/}
 OS_TENANT_NAME=${OS_TENANT_NAME:-service}
 
-# If OpenStack is installed then configure nova.conf
-if ! [ -e "${NOVA_CONF}" ]; then
-        echo "Please install OpenStack compute and then set the values"
-        echo "in /etc/nova/nova.conf DEFAULT section"
-        echo "    network_api_class=nova.network.quantumv2.api.API"
-        echo "    quantum_admin_username=${OS_USERNAME}"
-        echo "    quantum_admin_password=${OS_PASSWORD}"
-        echo "    quantum_admin_auth_url=${OS_AUTH_URL}"
-        echo "    quantum_auth_strategy=keystone"
-        echo "    quantum_admin_tenant_name=${OS_TENANT_NAME}"
-        echo "    quantum_url=http://${Q_HOST}:${Q_PORT}/"
-        echo "    libvirt_vif_driver=${LIBVIRT_VIF_DRIVER}"
-else
-        openstack-config --set ${NOVA_CONF} DEFAULT network_api_class nova.network.quantumv2.api.API
-        openstack-config --set ${NOVA_CONF} DEFAULT quantum_admin_username ${OS_USERNAME}
-        openstack-config --set ${NOVA_CONF} DEFAULT quantum_admin_password ${OS_PASSWORD}
-        openstack-config --set ${NOVA_CONF} DEFAULT quantum_admin_auth_url ${OS_AUTH_URL}
-        openstack-config --set ${NOVA_CONF} DEFAULT quantum_auth_strategy keystone 
-        openstack-config --set ${NOVA_CONF} DEFAULT quantum_admin_tenant_name ${OS_TENANT_NAME}
-        openstack-config --set ${NOVA_CONF} DEFAULT quantum_url http://${Q_HOST}:${Q_PORT}/
-        openstack-config --set ${NOVA_CONF} DEFAULT libvirt_vif_driver ${LIBVIRT_VIF_DRIVER}
-fi
+# Update Keystone
+openstack-config --set ${DHCP_CONF} DEFAULT auth_url ${OS_AUTH_URL}
+openstack-config --set ${DHCP_CONF} DEFAULT admin_username ${OS_USERNAME}
+openstack-config --set ${DHCP_CONF} DEFAULT admin_password ${OS_PASSWORD}
+openstack-config --set ${DHCP_CONF} DEFAULT admin_tenant_name ${OS_TENANT_NAME}
+
+# Update interface driver
+openstack-config --set ${DHCP_CONF} DEFAULT interface_driver ${LINUX_INTERFACE_DRIVER}
 
 echo "Configuration updates complete!"

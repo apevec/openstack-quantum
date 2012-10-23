@@ -1,7 +1,6 @@
-diff -Naur quantum-2012.1.orig/quantum/__init__.py quantum-2012.1/quantum/__init__.py
---- quantum-2012.1.orig/quantum/__init__.py	2012-04-25 12:30:18.110482493 +0000
-+++ quantum-2012.1/quantum/__init__.py	2012-04-25 12:31:34.397515453 +0000
-@@ -15,5 +15,35 @@
+--- quantum-2012.2/quantum/__init__.py.orig	2012-09-25 21:44:21.000000000 +0200
++++ quantum-2012.2/quantum/__init__.py	2012-10-23 15:11:27.629591625 +0200
+@@ -15,6 +15,36 @@
  #    License for the specific language governing permissions and limitations
  #    under the License.
  
@@ -35,5 +34,6 @@ diff -Naur quantum-2012.1.orig/quantum/__init__.py quantum-2012.1/quantum/__init
 +import paste
 +paste.__path__.insert(0, paste.__path__.pop(-1))
 +
- from pkgutil import extend_path
- __path__ = extend_path(__path__, __name__)
+ import gettext
+ 
+ 

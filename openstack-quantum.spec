@@ -1,21 +1,23 @@
 #
-# This is 2012.1 essex release
+# This is 2012.2 folsom final
 #
 
 Name:		openstack-quantum
-Version:	2012.1
-Release:	8%{?dist}
+Version:	2012.2
+Release:	1%{?dist}
 Summary:	Virtual network service for OpenStack (quantum)
 
 Group:		Applications/System
 License:	ASL 2.0
 URL:		http://launchpad.net/quantum/
 
-Source0:	http://tarballs.openstack.org/quantum/quantum-2012.1~20120715.784.tar.gz
+Source0:	https://launchpad.net/quantum/folsom/%{version}/+download/quantum-%{version}.tar.gz
 Source1:	quantum.logrotate
 Source2:	quantum-sudoers
 Source4:	quantum-server-setup
 Source5:	quantum-node-setup
+Source6:	quantum-dhcp-setup
+Source7:	quantum-l3-setup
 
 Source10:	quantum-server.init
 Source20:	quantum-server.upstart
@@ -25,6 +27,12 @@ Source12:	quantum-openvswitch-agent.init
 Source22:	quantum-openvswitch-agent.upstart
 Source13:	quantum-ryu-agent.init
 Source23:	quantum-ryu-agent.upstart
+Source14:	quantum-nec-agent.init
+Source24:	quantum-nec-agent.upstart
+Source15:	quantum-dhcp-agent.init
+Source25:	quantum-dhcp-agent.upstart
+Source16:	quantum-l3-agent.init
+Source26:	quantum-l3-agent.upstart
 
 # This is EPEL specific and not upstream
 Patch100:         openstack-quantum-newdeps.patch
@@ -53,32 +61,37 @@ Requires(pre):    shadow-utils
 
 
 %description
-Quantum is a virtual network service for Openstack, and a part of
-Netstack. Just like OpenStack Nova provides an API to dynamically
-request and configure virtual servers, Quantum provides an API to
-dynamically request and configure virtual networks. These networks
-connect "interfaces" from other OpenStack services (e.g., virtual NICs
-from Nova VMs). The Quantum API supports extensions to provide
-advanced network capabilities (e.g., QoS, ACLs, network monitoring,
-etc.)
+Quantum is a virtual network service for Openstack. Just like
+OpenStack Nova provides an API to dynamically request and configure
+virtual servers, Quantum provides an API to dynamically request and
+configure virtual networks. These networks connect "interfaces" from
+other OpenStack services (e.g., virtual NICs from Nova VMs). The
+Quantum API supports extensions to provide advanced network
+capabilities (e.g., QoS, ACLs, network monitoring, etc.)
 
 
 %package -n python-quantum
 Summary:	Quantum Python libraries
 Group:		Applications/System
 
-Requires:	python-quantumclient >= %{version}
 Requires:	MySQL-python
-Requires:	python-configobj
+Requires:	python-amqplib
+Requires:	python-anyjson
 Requires:	python-eventlet
+Requires:	python-greenlet
+Requires:	python-httplib2
+Requires:	python-iso8601
+Requires:	python-kombu
 Requires:	python-lxml
 Requires:	python-gflags
-Requires:	python-anyjson
 Requires:	python-paste-deploy1.5
 Requires:	python-routes1.12
 Requires:	python-sqlalchemy0.7
 Requires:	python-webob1.0
-
+Requires:	python-netaddr
+Requires:	python-qpid
+Requires:	python-quantumclient >= 1:2.1.1
+Requires:	sudo
 
 %description -n python-quantum
 Quantum provides an API to dynamically request and configure virtual
@@ -92,6 +105,7 @@ Summary:	Quantum Cisco plugin
 Group:		Applications/System
 
 Requires:	openstack-quantum = %{version}-%{release}
+Requires:	python-configobj
 
 
 %description -n openstack-quantum-cisco
@@ -106,9 +120,9 @@ networks using Cisco UCS and Nexus.
 Summary:	Quantum linuxbridge plugin
 Group:		Applications/System
 
-Requires:	openstack-quantum = %{version}-%{release}
 Requires:	bridge-utils
-Requires:	sudo
+Requires:	openstack-quantum = %{version}-%{release}
+Requires:	python-pyudev
 
 
 %description -n openstack-quantum-linuxbridge
@@ -139,7 +153,7 @@ Summary:	Quantum openvswitch plugin
 Group:		Applications/System
 
 Requires:	openstack-quantum = %{version}-%{release}
-Requires:	sudo
+Requires:	openvswitch
 
 
 %description -n openstack-quantum-openvswitch
@@ -151,11 +165,10 @@ networks using Open vSwitch.
 
 
 %package -n openstack-quantum-ryu
-Summary:	Quantum ryu plugin
+Summary:	Quantum Ryu plugin
 Group:		Applications/System
 
 Requires:	openstack-quantum = %{version}-%{release}
-Requires:	sudo
 
 
 %description -n openstack-quantum-ryu
@@ -164,6 +177,36 @@ networks.
 
 This package contains the quantum plugin that implements virtual
 networks using the Ryu Network Operating System.
+
+
+%package -n openstack-quantum-nec
+Summary:	Quantum NEC plugin
+Group:		Applications/System
+
+Requires:	openstack-quantum = %{version}-%{release}
+
+
+%description -n openstack-quantum-nec
+Quantum provides an API to dynamically request and configure virtual
+networks.
+
+This package contains the quantum plugin that implements virtual
+networks using the NEC OpenFlow controller.
+
+
+%package -n openstack-quantum-metaplugin
+Summary:	Quantum meta plugin
+Group:		Applications/System
+
+Requires:	openstack-quantum = %{version}-%{release}
+
+
+%description -n openstack-quantum-metaplugin
+Quantum provides an API to dynamically request and configure virtual
+networks.
+
+This package contains the quantum plugin that implements virtual
+networks using multiple other quantum plugins.
 
 
 %prep
@@ -175,7 +218,13 @@ networks using the Ryu Network Operating System.
 find quantum -name \*.py -exec sed -i '/\/usr\/bin\/env python/d' {} \;
 
 chmod 644 quantum/plugins/cisco/README
-dos2unix quantum/plugins/cisco/README
+
+# Adjust configuration file content
+sed -i 's/debug = True/debug = False/' etc/quantum.conf
+sed -i 's/\# auth_strategy = keystone/auth_strategy = noauth/' etc/quantum.conf
+
+# Remove unneeded dependency
+sed -i '/setuptools_git/d' setup.py
 
 
 %build
@@ -192,25 +241,40 @@ rm -rf %{buildroot}%{python_sitelib}/tools
 rm -rf %{buildroot}%{python_sitelib}/quantum/tests
 rm -rf %{buildroot}%{python_sitelib}/quantum/plugins/*/tests
 rm -f %{buildroot}%{python_sitelib}/quantum/plugins/*/run_tests.*
-rm %{buildroot}/usr/etc/quantum/quantum.conf.test
 rm %{buildroot}/usr/etc/init.d/quantum-server
 
 # Install execs (using hand-coded rather than generated versions)
-install -p -D -m 755 bin/quantum-server %{buildroot}%{_bindir}/quantum-server
+install -p -D -m 755 bin/quantum-debug %{buildroot}%{_bindir}/quantum-debug
+install -p -D -m 755 bin/quantum-dhcp-agent %{buildroot}%{_bindir}/quantum-dhcp-agent
+install -p -D -m 755 bin/quantum-dhcp-agent-dnsmasq-lease-update %{buildroot}%{_bindir}/quantum-dhcp-agent-dnsmasq-lease-update
+install -p -D -m 755 bin/quantum-l3-agent %{buildroot}%{_bindir}/quantum-l3-agent
 install -p -D -m 755 bin/quantum-linuxbridge-agent %{buildroot}%{_bindir}/quantum-linuxbridge-agent
+install -p -D -m 755 bin/quantum-nec-agent %{buildroot}%{_bindir}/quantum-nec-agent
+install -p -D -m 755 bin/quantum-netns-cleanup %{buildroot}%{_bindir}/quantum-netns-cleanup
 install -p -D -m 755 bin/quantum-openvswitch-agent %{buildroot}%{_bindir}/quantum-openvswitch-agent
-install -p -D -m 755 bin/quantum-ryu-agent %{buildroot}%{_bindir}/quantum-ryu-agent
 install -p -D -m 755 bin/quantum-rootwrap %{buildroot}%{_bindir}/quantum-rootwrap
+install -p -D -m 755 bin/quantum-ryu-agent %{buildroot}%{_bindir}/quantum-ryu-agent
+install -p -D -m 755 bin/quantum-server %{buildroot}%{_bindir}/quantum-server
+
+# Move rootwrap files to proper location
+install -d -m 755 %{buildroot}%{_datarootdir}/quantum/rootwrap
+mv %{buildroot}/usr/etc/quantum/rootwrap.d/*.filters %{buildroot}%{_datarootdir}/quantum/rootwrap
 
 # Move config files to proper location
 install -d -m 755 %{buildroot}%{_sysconfdir}/quantum
 mv %{buildroot}/usr/etc/quantum/* %{buildroot}%{_sysconfdir}/quantum
 chmod 640  %{buildroot}%{_sysconfdir}/quantum/plugins/*/*.ini
 
-# Configure plugin agents to use quantum-rootwrap
-for f in %{buildroot}%{_sysconfdir}/quantum/plugins/*/*.ini; do
-    sed -i 's/root_helper = sudo/root_helper = sudo quantum-rootwrap/g' $f
+# Install files missing from setup.py (https://bugs.launchpad.net/quantum/+bug/1050045)
+install -p -D -m 640 etc/l3_agent.ini %{buildroot}%{_sysconfdir}/quantum/l3_agent.ini
+
+# Configure agents to use quantum-rootwrap
+for f in %{buildroot}%{_sysconfdir}/quantum/plugins/*/*.ini %{buildroot}%{_sysconfdir}/quantum/*_agent.ini; do
+    sed -i 's/^root_helper.*/root_helper = sudo quantum-rootwrap \/etc\/quantum\/rootwrap.conf/g' $f
 done
+
+# Configure quantum-dhcp-agent state_path
+sed -i 's/state_path = \/opt\/stack\/data/state_path = \/var\/lib\/quantum/' %{buildroot}%{_sysconfdir}/quantum/dhcp_agent.ini
 
 # Install logrotate
 install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/openstack-quantum
@@ -223,6 +287,9 @@ install -p -D -m 755 %{SOURCE10} %{buildroot}%{_initrddir}/quantum-server
 install -p -D -m 755 %{SOURCE11} %{buildroot}%{_initrddir}/quantum-linuxbridge-agent
 install -p -D -m 755 %{SOURCE12} %{buildroot}%{_initrddir}/quantum-openvswitch-agent
 install -p -D -m 755 %{SOURCE13} %{buildroot}%{_initrddir}/quantum-ryu-agent
+install -p -D -m 755 %{SOURCE14} %{buildroot}%{_initrddir}/quantum-nec-agent
+install -p -D -m 755 %{SOURCE15} %{buildroot}%{_initrddir}/quantum-dhcp-agent
+install -p -D -m 755 %{SOURCE16} %{buildroot}%{_initrddir}/quantum-l3-agent
 
 # Setup directories
 install -d -m 755 %{buildroot}%{_datadir}/quantum
@@ -233,12 +300,17 @@ install -d -m 755 %{buildroot}%{_localstatedir}/run/quantum
 # Install setup helper scripts
 install -p -D -m 755 %{SOURCE4} %{buildroot}%{_bindir}/quantum-server-setup
 install -p -D -m 755 %{SOURCE5} %{buildroot}%{_bindir}/quantum-node-setup
+install -p -D -m 755 %{SOURCE6} %{buildroot}%{_bindir}/quantum-dhcp-setup
+install -p -D -m 755 %{SOURCE7} %{buildroot}%{_bindir}/quantum-l3-setup
 
 # Install upstart jobs examples
 install -p -m 644 %{SOURCE20} %{buildroot}%{_datadir}/quantum/
 install -p -m 644 %{SOURCE21} %{buildroot}%{_datadir}/quantum/
 install -p -m 644 %{SOURCE22} %{buildroot}%{_datadir}/quantum/
 install -p -m 644 %{SOURCE23} %{buildroot}%{_datadir}/quantum/
+install -p -m 644 %{SOURCE24} %{buildroot}%{_datadir}/quantum/
+install -p -m 644 %{SOURCE25} %{buildroot}%{_datadir}/quantum/
+install -p -m 644 %{SOURCE26} %{buildroot}%{_datadir}/quantum/
 
 %pre
 getent group quantum >/dev/null || groupadd -r quantum --gid 164
@@ -259,6 +331,10 @@ if [ $1 -eq 0 ] ; then
     # Package removal, not upgrade
     /sbin/service quantum-server stop >/dev/null 2>&1
     /sbin/chkconfig --del quantum-server
+    /sbin/service quantum-dhcp-agent stop >/dev/null 2>&1
+    /sbin/chkconfig --del quantum-dhcp-agent
+    /sbin/service quantum-l3-agent stop >/dev/null 2>&1
+    /sbin/chkconfig --del quantum-l3-agent
 fi
 
 %postun
@@ -328,32 +404,66 @@ if [ $1 -ge 1 ] ; then
 fi
 
 
+%preun -n openstack-quantum-nec
+if [ $1 -eq 0 ] ; then
+    # Package removal, not upgrade
+    /sbin/service quantum-nec-agent stop >/dev/null 2>&1
+    /sbin/chkconfig --del quantum-nec-agent
+fi
+
+
+%postun -n openstack-quantum-nec
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+if [ $1 -ge 1 ] ; then
+    # Package upgrade, not uninstall
+    /sbin/service quantum-nec-agent condrestart >/dev/null 2>&1 || :
+fi
+
+
 %files
 %doc LICENSE
 %doc README
-%{_bindir}/quantum-server
-%{_bindir}/quantum-rootwrap
-%{_bindir}/quantum-server-setup
+%{_bindir}/quantum-debug
+%{_bindir}/quantum-dhcp-agent
+%{_bindir}/quantum-dhcp-agent-dnsmasq-lease-update
+%{_bindir}/quantum-dhcp-setup
+%{_bindir}/quantum-l3-agent
+%{_bindir}/quantum-l3-setup
+%{_bindir}/quantum-netns-cleanup
 %{_bindir}/quantum-node-setup
+%{_bindir}/quantum-rootwrap
+%{_bindir}/quantum-server
+%{_bindir}/quantum-server-setup
 %{_initrddir}/quantum-server
+%{_initrddir}/quantum-dhcp-agent
+%{_initrddir}/quantum-l3-agent
 %dir %{_datadir}/quantum
 %{_datadir}/quantum/quantum-server.upstart
+%{_datadir}/quantum/quantum-dhcp-agent.upstart
+%{_datadir}/quantum/quantum-l3-agent.upstart
 %dir %{_sysconfdir}/quantum
-%config(noreplace) %{_sysconfdir}/quantum/quantum.conf
-%config(noreplace) %{_sysconfdir}/quantum/plugins.ini
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/api-paste.ini
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/dhcp_agent.ini
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/l3_agent.ini
+%config(noreplace) %{_sysconfdir}/quantum/policy.json
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/quantum.conf
+%config(noreplace) %{_sysconfdir}/quantum/rootwrap.conf
 %dir %{_sysconfdir}/quantum/plugins
 %config(noreplace) %{_sysconfdir}/logrotate.d/*
 %config(noreplace) %{_sysconfdir}/sudoers.d/quantum
 %dir %attr(0755, quantum, quantum) %{_sharedstatedir}/quantum
 %dir %attr(0755, quantum, quantum) %{_localstatedir}/log/quantum
 %dir %attr(0755, quantum, quantum) %{_localstatedir}/run/quantum
+%dir %{_datarootdir}/quantum/rootwrap
+%{_datarootdir}/quantum/rootwrap/dhcp.filters
+%{_datarootdir}/quantum/rootwrap/iptables-firewall.filters
+%{_datarootdir}/quantum/rootwrap/l3.filters
 
 
 %files -n python-quantum
-# note that %%{python_sitelib}/quantum is owned by python-quantumclient
 %doc LICENSE
 %doc README
-%{python_sitelib}/quantum/*
+%{python_sitelib}/quantum
 %exclude %{python_sitelib}/quantum/extensions/_credential_view.py*
 %exclude %{python_sitelib}/quantum/extensions/portprofile.py*
 %exclude %{python_sitelib}/quantum/extensions/novatenant.py*
@@ -365,10 +475,11 @@ fi
 %exclude %{python_sitelib}/quantum/extensions/_qos_view.py*
 %exclude %{python_sitelib}/quantum/plugins/cisco
 %exclude %{python_sitelib}/quantum/plugins/linuxbridge
+%exclude %{python_sitelib}/quantum/plugins/metaplugin
+%exclude %{python_sitelib}/quantum/plugins/nec
 %exclude %{python_sitelib}/quantum/plugins/nicira
 %exclude %{python_sitelib}/quantum/plugins/openvswitch
 %exclude %{python_sitelib}/quantum/plugins/ryu
-%exclude %{python_sitelib}/quantum/rootwrap/*-agent.py*
 %{python_sitelib}/quantum-%%{version}-*.egg-info
 
 
@@ -386,7 +497,7 @@ fi
 %{python_sitelib}/quantum/extensions/_qos_view.py*
 %{python_sitelib}/quantum/plugins/cisco
 %dir %{_sysconfdir}/quantum/plugins/cisco
-%config(noreplace) %attr(-, root, quantum) %{_sysconfdir}/quantum/plugins/cisco/*.ini
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/plugins/cisco/*.ini
 
 
 %files -n openstack-quantum-linuxbridge
@@ -396,9 +507,9 @@ fi
 %{_initrddir}/quantum-linuxbridge-agent
 %{_datadir}/quantum/quantum-linuxbridge-agent.upstart
 %{python_sitelib}/quantum/plugins/linuxbridge
-%{python_sitelib}/quantum/rootwrap/linuxbridge-agent.py*
+%{_datarootdir}/quantum/rootwrap/linuxbridge-plugin.filters
 %dir %{_sysconfdir}/quantum/plugins/linuxbridge
-%config(noreplace) %attr(-, root, quantum) %{_sysconfdir}/quantum/plugins/linuxbridge/*.ini
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/plugins/linuxbridge/*.ini
 
 
 %files -n openstack-quantum-nicira
@@ -406,7 +517,7 @@ fi
 %doc quantum/plugins/nicira/nicira_nvp_plugin/README
 %{python_sitelib}/quantum/plugins/nicira
 %dir %{_sysconfdir}/quantum/plugins/nicira
-%config(noreplace) %attr(-, root, quantum) %{_sysconfdir}/quantum/plugins/nicira/*.ini
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/plugins/nicira/*.ini
 
 
 %files -n openstack-quantum-openvswitch
@@ -416,9 +527,9 @@ fi
 %{_initrddir}/quantum-openvswitch-agent
 %{_datadir}/quantum/quantum-openvswitch-agent.upstart
 %{python_sitelib}/quantum/plugins/openvswitch
-%{python_sitelib}/quantum/rootwrap/openvswitch-agent.py*
+%{_datarootdir}/quantum/rootwrap/openvswitch-plugin.filters
 %dir %{_sysconfdir}/quantum/plugins/openvswitch
-%config(noreplace) %attr(-, root, quantum) %{_sysconfdir}/quantum/plugins/openvswitch/*.ini
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/plugins/openvswitch/*.ini
 
 
 %files -n openstack-quantum-ryu
@@ -428,12 +539,36 @@ fi
 %{_initrddir}/quantum-ryu-agent
 %{_datadir}/quantum/quantum-ryu-agent.upstart
 %{python_sitelib}/quantum/plugins/ryu
-%{python_sitelib}/quantum/rootwrap/ryu-agent.py*
+%{_datarootdir}/quantum/rootwrap/ryu-plugin.filters
 %dir %{_sysconfdir}/quantum/plugins/ryu
-%config(noreplace) %attr(-, root, quantum) %{_sysconfdir}/quantum/plugins/ryu/*.ini
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/plugins/ryu/*.ini
+
+
+%files -n openstack-quantum-nec
+%doc LICENSE
+%doc quantum/plugins/nec/README
+%{_bindir}/quantum-nec-agent
+%{_initrddir}/quantum-nec-agent
+%{_datadir}/quantum/quantum-nec-agent.upstart
+%{python_sitelib}/quantum/plugins/nec
+%{_datarootdir}/quantum/rootwrap/nec-plugin.filters
+%dir %{_sysconfdir}/quantum/plugins/nec
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/plugins/nec/*.ini
+
+
+%files -n openstack-quantum-metaplugin
+%doc LICENSE
+%doc quantum/plugins/metaplugin/README
+%{python_sitelib}/quantum/plugins/metaplugin
+%dir %{_sysconfdir}/quantum/plugins/metaplugin
+%config(noreplace) %attr(0640, root, quantum) %{_sysconfdir}/quantum/plugins/metaplugin/*.ini
 
 
 %changelog
+* Fri Sep 28 2012 Robert Kukura <rkukura@redhat.com> - 2012.2-1
+- Update to folsom final
+- Require python-quantumclient >= 1:2.1.1
+
 * Tue Aug 21 2012 Robert Kukura <rkukura@redhat.com> - 2012.1-8
 - fix database config generated by install scripts (#847785)
 

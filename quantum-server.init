@@ -23,7 +23,7 @@ start() {
     [ -x $exec ] || exit 5
     [ -f $config ] || exit 6
     echo -n $"Starting $prog: "
-    daemon --user quantum --pidfile $pidfile "$exec --config-file $config --log-file $logfile &>/dev/null & echo \$! > $pidfile"
+    daemon --user quantum --pidfile $pidfile "$exec --config-file $config --config-file /etc/$prog/plugin.ini --log-file $logfile &>/dev/null & echo \$! > $pidfile"
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile

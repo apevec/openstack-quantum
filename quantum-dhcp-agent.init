@@ -1,18 +1,18 @@
 #!/bin/sh
 #
-# quantum-ryu-agent  OpenStack Ryu Network OS plugin
+# quantum-dhcp-agent  OpenStack Quantum DHCP Agent
 #
 # chkconfig:   - 98 02
-# description: Support virtual networks using Ryu Network OS
+# description: OpenStack Quantum DHCP Agent
 ### END INIT INFO
 
 . /etc/rc.d/init.d/functions
 
 proj=quantum
-plugin=ryu-agent
+plugin=dhcp-agent
 prog=$proj-$plugin
 exec="/usr/bin/$prog"
-config="/etc/$proj/plugins/ryu/ryu.ini"
+config="/etc/$proj/dhcp_agent.ini"
 pidfile="/var/run/$proj/$prog.pid"
 
 [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog

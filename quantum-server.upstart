@@ -5,4 +5,4 @@ stop on runlevel [S016]
 
 respawn
 
-exec su -s /bin/sh -c "exec /usr/bin/quantum-server --config-file /etc/quantum/quantum.conf --log-file /var/log/quantum/server.log" quantum
+exec su -s /bin/sh -c "exec /usr/bin/quantum-server --config-file /etc/quantum/quantum.conf --config-file /etc/quantum/plugin.ini --log-file /var/log/quantum/server.log" quantum
