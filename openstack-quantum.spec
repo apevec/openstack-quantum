@@ -83,7 +83,6 @@ Requires:	python-httplib2
 Requires:	python-iso8601
 Requires:	python-kombu
 Requires:	python-lxml
-Requires:	python-gflags
 Requires:	python-paste-deploy1.5
 Requires:	python-routes1.12
 Requires:	python-sqlalchemy0.7
