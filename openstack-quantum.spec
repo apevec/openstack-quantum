@@ -4,7 +4,7 @@
 
 Name:		openstack-quantum
 Version:	2012.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Virtual network service for OpenStack (quantum)
 
 Group:		Applications/System
@@ -36,6 +36,11 @@ Source26:	quantum-l3-agent.upstart
 
 # This is EPEL specific and not upstream
 Patch100:         openstack-quantum-newdeps.patch
+
+#
+# patches_base=2012.2
+#
+Patch0001: 0001-Treat-invalid-namespace-call.patch
 
 BuildArch:	noarch
 
@@ -211,6 +216,7 @@ networks using multiple other quantum plugins.
 %prep
 %setup -q -n quantum-%{version}
 
+%patch0001 -p1
 # Apply EPEL patch
 %patch100 -p1
 
@@ -564,6 +570,9 @@ fi
 
 
 %changelog
+* Thu Nov 01 2012 Alan Pevec <apevec@redhat.com> 2012.2-2
+- l3_agent not disabling namespace use lp#1060559
+
 * Fri Sep 28 2012 Robert Kukura <rkukura@redhat.com> - 2012.2-1
 - Update to folsom final
 - Require python-quantumclient >= 1:2.1.1
