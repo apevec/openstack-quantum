@@ -1,10 +1,10 @@
 #
-# This is 2012.2 folsom final
+# This is 2012.2.1 folsom stable
 #
 
 Name:		openstack-quantum
-Version:	2012.2
-Release:	2%{?dist}
+Version:	2012.2.1
+Release:	1%{?dist}
 Summary:	Virtual network service for OpenStack (quantum)
 
 Group:		Applications/System
@@ -40,7 +40,9 @@ Patch100:         openstack-quantum-newdeps.patch
 #
 # patches_base=2012.2
 #
-Patch0001: 0001-Treat-invalid-namespace-call.patch
+
+# Upstream stable branch patch https://review.openstack.org/17236
+Patch1:		quantum.git-8017d0932c54078e7e18058e78f12c76d68462c7.patch
 
 BuildArch:	noarch
 
@@ -216,7 +218,7 @@ networks using multiple other quantum plugins.
 %prep
 %setup -q -n quantum-%{version}
 
-%patch0001 -p1
+%patch1 -p1
 # Apply EPEL patch
 %patch100 -p1
 
@@ -269,9 +271,6 @@ mv %{buildroot}/usr/etc/quantum/rootwrap.d/*.filters %{buildroot}%{_datarootdir}
 install -d -m 755 %{buildroot}%{_sysconfdir}/quantum
 mv %{buildroot}/usr/etc/quantum/* %{buildroot}%{_sysconfdir}/quantum
 chmod 640  %{buildroot}%{_sysconfdir}/quantum/plugins/*/*.ini
-
-# Install files missing from setup.py (https://bugs.launchpad.net/quantum/+bug/1050045)
-install -p -D -m 640 etc/l3_agent.ini %{buildroot}%{_sysconfdir}/quantum/l3_agent.ini
 
 # Configure agents to use quantum-rootwrap
 for f in %{buildroot}%{_sysconfdir}/quantum/plugins/*/*.ini %{buildroot}%{_sysconfdir}/quantum/*_agent.ini; do
@@ -570,6 +569,11 @@ fi
 
 
 %changelog
+* Mon Dec  3 2012 Robert Kukura <rkukura@redhat.com> - 2012.2.1-1
+- Update to folsom stable 2012.2.1
+- Add upstream patch: Fix rpc control_exchange regression.
+- Remove workaround for missing l3_agent.ini
+
 * Thu Nov 01 2012 Alan Pevec <apevec@redhat.com> 2012.2-2
 - l3_agent not disabling namespace use lp#1060559
 
