@@ -38,7 +38,7 @@ Source26:	quantum-l3-agent.upstart
 Patch100:         openstack-quantum-newdeps.patch
 
 #
-# patches_base=2012.2
+# patches_base=2012.2.1
 #
 
 # Upstream stable branch patch https://review.openstack.org/17236
