@@ -59,6 +59,7 @@ BuildRequires:	dos2unix
 
 Requires:	python-quantum = %{version}-%{release}
 Requires:	openstack-utils
+Requires:       python-keystone
 
 Requires(post):   chkconfig
 Requires(postun): initscripts
@@ -569,6 +570,9 @@ fi
 
 
 %changelog
+* Wed Jan 23 2013 Martin Magr <mmagr@redhat.com> - 2012.2.1-1
+- Added python-keystone requirement
+
 * Mon Dec  3 2012 Robert Kukura <rkukura@redhat.com> - 2012.2.1-1
 - Update to folsom stable 2012.2.1
 - Add upstream patch: Fix rpc control_exchange regression.
