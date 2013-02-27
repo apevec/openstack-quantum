@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# quantum-ovs-cleanup  OpenStack Open vSwitch cleanup utility
+#
+# chkconfig:   - 97 02
+# description: Purge Open vSwitch of the Quantum devices
+### END INIT INFO
+
+. /etc/rc.d/init.d/functions
+
+proj=quantum
+prog=$proj-ovs-cleanup
+exec="/usr/bin/$prog"
+pidfile="/var/run/$proj/$prog.pid"
+config="/etc/$proj/plugins/openvswitch/ovs_quantum_plugin.ini"
+
+[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+
+lockfile=/var/lock/subsys/$prog
+
+start() {
+    [ -x $exec ] || exit 5
+    [ -f $config ] || exit 6
+    $exec --config-file /usr/share/$proj/$proj-dist.conf --config-file /etc/$proj/$proj.conf --config-file $config &>/dev/null
+    retval=$?
+    [ $retval -eq 0 ] && touch $lockfile
+    return $retval
+}
+
+case "$1" in
+    start)
+        $1
+        ;;
+    stop|restart|reload|force-reload|status|condrestart|try-restart)
+        # Do nothing
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
+        exit 2
+esac
+exit $?

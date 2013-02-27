@@ -745,7 +745,7 @@ fi
 - Require compatible version of python-sqlalchemy
 - Various spec file improvements
 
-* Thu Feb 15 2013 Robert Kukura <rkukura@redhat.com> - 2013.1-0.3.g2
+* Fri Feb 15 2013 Robert Kukura <rkukura@redhat.com> - 2013.1-0.3.g2
 - Update to grizzly milestone 2
 - Add quantum-db-manage, quantum-metadata-agent,
   quantum-ns-metadata-proxy, quantum-ovs-cleanup, and
@@ -760,15 +760,15 @@ fi
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2013.1-0.2.g1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
+* Wed Jan 23 2013 Martin Magr <mmagr@redhat.com> - 2012.2.1-1
+- Added python-keystone requirement
+
 * Wed Dec  5 2012 Robert Kukura <rkukura@redhat.com> - 2013.1-0.1.g1
 - Update to grizzly milestone 1
 - Require python-quantumclient >= 1:2.1.10
 - Remove unneeded rpc control_exchange patch
 - Add bigswitch plugin as sub-package
 - Work around bigswitch conf file missing from setup.py
-
-* Wed Jan 23 2013 Martin Magr <mmagr@redhat.com> - 2012.2.1-1
-- Added python-keystone requirement
 
 * Mon Dec  3 2012 Robert Kukura <rkukura@redhat.com> - 2012.2.1-1
 - Update to folsom stable 2012.2.1

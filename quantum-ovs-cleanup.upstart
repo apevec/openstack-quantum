@@ -1,0 +1,7 @@
+description "OpenStack Quantum Open vSwitch cleanup utility"
+
+start on stopped rc RUNLEVEL=[2345]
+
+task
+
+exec su -s /bin/sh -c "exec /usr/bin/quantum-ovs-cleanup --config-file /usr/share/quantum/quantum-dist.conf --config-file /etc/quantum/quantum.conf --config-file /etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" quantum
