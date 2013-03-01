@@ -63,7 +63,6 @@ BuildRequires:	python-webob1.0
 BuildRequires:	python-paste-deploy1.5
 BuildRequires:	python-routes1.12
 BuildRequires:	dos2unix
-BuildRequires: python-sphinx10
 
 Requires:	python-quantum = %{version}-%{release}
 Requires:	openstack-utils
