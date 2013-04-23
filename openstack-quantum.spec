@@ -44,6 +44,7 @@ Source29:	quantum-lbaas-agent.upstart
 #
 # patches_base=2013.1
 #
+Patch0001: 0001-dhcp-agent-make-dnsmasq-tags-work-with-RHEL-6.patch
 
 # This is EPEL specific and not upstream
 Patch100:         openstack-quantum-newdeps.patch
@@ -305,6 +306,7 @@ networks using multiple other quantum plugins.
 %prep
 %setup -q -n quantum-%{version}
 
+%patch0001 -p1
 # Apply EPEL patch
 %patch100 -p1
 

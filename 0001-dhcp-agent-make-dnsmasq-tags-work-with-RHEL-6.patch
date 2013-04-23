@@ -1,0 +1,39 @@
+From 6ce9b55f1319831ca3a711c03cffb6cda5218fe8 Mon Sep 17 00:00:00 2001
+From: Chris Wright <chrisw@sous-sol.org>
+Date: Mon, 7 Jan 2013 18:21:20 -0800
+Subject: [PATCH] dhcp agent: make dnsmasq tags work with RHEL 6
+
+rhbz 887369
+
+RHEL 6 has dnsmasq-2.48 which has a different syntax for tags compared
+with newer (>= dnsmasq-2.53). This patch updates command line and
+options file contents to work with dnsmasq-2.48.
+
+Change-Id: Ibf9309007fbf62f1f176737f2a5d179eabcf89dc
+Signed-off-by: Chris Wright <chrisw@redhat.com>
+---
+ quantum/agent/linux/dhcp.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/quantum/agent/linux/dhcp.py b/quantum/agent/linux/dhcp.py
+index 709d7da..20752e3 100644
+--- a/quantum/agent/linux/dhcp.py
++++ b/quantum/agent/linux/dhcp.py
+@@ -273,7 +273,7 @@ class Dnsmasq(DhcpLocalProcess):
+                 # TODO (mark): how do we indicate other options
+                 # ra-only, slaac, ra-nameservers, and ra-stateless.
+                 mode = 'static'
+-            cmd.append('--dhcp-range=set:%s,%s,%s,%ss' %
++            cmd.append('--dhcp-range=%s,%s,%s,%ss' %
+                        (self._TAG_PREFIX % i,
+                         netaddr.IPNetwork(subnet.cidr).network,
+                         mode,
+@@ -404,7 +404,7 @@ class Dnsmasq(DhcpLocalProcess):
+                             'quantum-dhcp-agent-dnsmasq-lease-update')
+ 
+     def _format_option(self, index, option_name, *args):
+-        return ','.join(('tag:' + self._TAG_PREFIX % index,
++        return ','.join((self._TAG_PREFIX % index,
+                          'option:%s' % option_name) + args)
+ 
+     @classmethod
