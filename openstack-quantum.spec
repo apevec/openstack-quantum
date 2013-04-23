@@ -5,7 +5,7 @@
 
 Name:		openstack-quantum
 Version:	2013.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	OpenStack Networking Service
 
 Group:		Applications/System
