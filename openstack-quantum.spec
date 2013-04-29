@@ -5,7 +5,7 @@
 
 Name:		openstack-quantum
 Version:	2013.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	OpenStack Networking Service
 
 Group:		Applications/System
@@ -743,6 +743,9 @@ fi
 
 
 %changelog
+* Mon Apr 29 2013 Pádraig Brady <pbrady@redhat.com> 2013.1-3
+- Fix quantum-ovs-cleanup.init to reference the correct config files
+
 * Wed Apr  4 2013 Gary Kotton <gkotton@redhat.com> - 2013.1-1
 - Update to grizzly release
 

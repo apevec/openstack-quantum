@@ -21,7 +21,7 @@ lockfile=/var/lock/subsys/$prog
 start() {
     [ -x $exec ] || exit 5
     [ -f $config ] || exit 6
-    $exec --config-file /usr/share/$proj/$proj-dist.conf --config-file /etc/$proj/$proj.conf --config-file $config &>/dev/null
+    $exec --config-file /etc/$proj/$proj.conf --config-file $config &>/dev/null
     retval=$?
     [ $retval -eq 0 ] && touch $lockfile
     return $retval
