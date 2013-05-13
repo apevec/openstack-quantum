@@ -4,8 +4,8 @@
 %global release_name grizzly
 
 Name:		openstack-quantum
-Version:	2013.1
-Release:	3%{?dist}
+Version:	2013.1.1
+Release:	1%{?dist}
 Summary:	OpenStack Networking Service
 
 Group:		Applications/System
@@ -743,6 +743,11 @@ fi
 
 
 %changelog
+* Mon May 13 2013 Gary Kotton <gkotton@redhat.com> - 2013.1.1-1
+- Update to grizzly stable release 2013.1.1
+- Update install scripts to configure security groups
+- Update install scripts to remove virtual interface configurations
+
 * Mon Apr 29 2013 Pádraig Brady <pbrady@redhat.com> 2013.1-3
 - Fix quantum-ovs-cleanup.init to reference the correct config files
 
