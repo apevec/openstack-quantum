@@ -1,5 +1,19 @@
---- quantum-2012.2/quantum/__init__.py.orig	2012-09-25 21:44:21.000000000 +0200
-+++ quantum-2012.2/quantum/__init__.py	2012-10-23 15:11:27.629591625 +0200
+From 8fea27bc56455509eb29ee0ea09f7af5813d3da7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?P=C3=A1draig=20Brady?= <P@draigBrady.com>
+Date: Fri, 13 Apr 2012 17:24:40 +0100
+Subject: [PATCH] use parallel installed versions in RHEL6
+
+of webob sqlalchemy python-routes and paste-deploy
+
+Change-Id: I290f56eae61c87893639a9e5d29f7fff760452cf
+---
+ quantum/__init__.py | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/quantum/__init__.py b/quantum/__init__.py
+index 25ce3af..eb5a3fa 100644
+--- a/quantum/__init__.py
++++ b/quantum/__init__.py
 @@ -15,6 +15,36 @@
  #    License for the specific language governing permissions and limitations
  #    under the License.

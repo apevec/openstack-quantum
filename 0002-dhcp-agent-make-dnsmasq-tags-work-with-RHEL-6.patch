@@ -1,4 +1,4 @@
-From 6ce9b55f1319831ca3a711c03cffb6cda5218fe8 Mon Sep 17 00:00:00 2001
+From 0c1e1a1d753bb822d3783778f94878a9ef390dd2 Mon Sep 17 00:00:00 2001
 From: Chris Wright <chrisw@sous-sol.org>
 Date: Mon, 7 Jan 2013 18:21:20 -0800
 Subject: [PATCH] dhcp agent: make dnsmasq tags work with RHEL 6

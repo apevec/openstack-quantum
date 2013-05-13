@@ -5,7 +5,7 @@
 
 Name:		openstack-quantum
 Version:	2013.1.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	OpenStack Networking Service
 
 Group:		Applications/System
@@ -42,12 +42,10 @@ Source19:	quantum-lbaas-agent.init
 Source29:	quantum-lbaas-agent.upstart
 
 #
-# patches_base=2013.1
+# patches_base=2013.1.1
 #
-Patch0001: 0001-dhcp-agent-make-dnsmasq-tags-work-with-RHEL-6.patch
-
-# This is EPEL specific and not upstream
-Patch100:         openstack-quantum-newdeps.patch
+Patch0001: 0001-use-parallel-installed-versions-in-RHEL6.patch
+Patch0002: 0002-dhcp-agent-make-dnsmasq-tags-work-with-RHEL-6.patch
 
 BuildArch:	noarch
 
@@ -307,8 +305,7 @@ networks using multiple other quantum plugins.
 %setup -q -n quantum-%{version}
 
 %patch0001 -p1
-# Apply EPEL patch
-%patch100 -p1
+%patch0002 -p1
 
 sed -i 's/%{version}/%{version}/' PKG-INFO
 
@@ -743,7 +740,7 @@ fi
 
 
 %changelog
-* Mon May 13 2013 Gary Kotton <gkotton@redhat.com> - 2013.1.1-1
+* Mon May 13 2013 Gary Kotton <gkotton@redhat.com> - 2013.1.1-2
 - Update to grizzly stable release 2013.1.1
 - Update install scripts to configure security groups
 - Update install scripts to remove virtual interface configurations
