@@ -5,7 +5,7 @@
 
 Name:		openstack-quantum
 Version:	2013.1.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	OpenStack Networking Service
 
 Group:		Applications/System
@@ -740,6 +740,9 @@ fi
 
 
 %changelog
+* Tue May 22 2013 Gary Kotton <gkotton@redhat.com> - 2013.1.1-3
+- Update to init scripts to work with namespaces
+
 * Mon May 13 2013 Gary Kotton <gkotton@redhat.com> - 2013.1.1-2
 - Update to grizzly stable release 2013.1.1
 - Update install scripts to configure security groups
