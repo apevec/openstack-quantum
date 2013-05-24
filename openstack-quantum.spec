@@ -46,6 +46,8 @@ Source29:	quantum-lbaas-agent.upstart
 #
 Patch0001: 0001-use-parallel-installed-versions-in-RHEL6.patch
 Patch0002: 0002-dhcp-agent-make-dnsmasq-tags-work-with-RHEL-6.patch
+Patch0003: 0003-Create-veth-peer-in-namespace.patch
+Patch0004: 0004-Add-kill-metadata-rootwrap-filter-to-support-RHEL.patch
 
 BuildArch:	noarch
 
@@ -306,6 +308,8 @@ networks using multiple other quantum plugins.
 
 %patch0001 -p1
 %patch0002 -p1
+%patch0003 -p1
+%patch0004 -p1
 
 sed -i 's/%{version}/%{version}/' PKG-INFO
 
@@ -741,7 +745,8 @@ fi
 
 %changelog
 * Tue May 22 2013 Gary Kotton <gkotton@redhat.com> - 2013.1.1-3
-- Update to init scripts to work with namespaces
+- Updates to work with namespaces
+- Fix kill-metadata rootwrap filter
 
 * Mon May 13 2013 Gary Kotton <gkotton@redhat.com> - 2013.1.1-2
 - Update to grizzly stable release 2013.1.1

@@ -12,8 +12,8 @@ options file contents to work with dnsmasq-2.48.
 Change-Id: Ibf9309007fbf62f1f176737f2a5d179eabcf89dc
 Signed-off-by: Chris Wright <chrisw@redhat.com>
 ---
- quantum/agent/linux/dhcp.py | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ quantum/agent/linux/dhcp.py |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/quantum/agent/linux/dhcp.py b/quantum/agent/linux/dhcp.py
 index 709d7da..20752e3 100644
