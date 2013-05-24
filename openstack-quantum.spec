@@ -5,7 +5,7 @@
 
 Name:		openstack-quantum
 Version:	2013.1.1
-Release:	3%{?dist}
+Release:	5%{?dist}
 Summary:	OpenStack Networking Service
 
 Group:		Applications/System
@@ -314,9 +314,6 @@ networks using multiple other quantum plugins.
 sed -i 's/%{version}/%{version}/' PKG-INFO
 
 find quantum -name \*.py -exec sed -i '/\/usr\/bin\/env python/d' {} \;
-
-# Remove bundled egg-info
-rm -rf quantum.egg-info
 
 # let RPM handle deps
 sed -i '/setup_requires/d; /install_requires/d; /dependency_links/d' setup.py
@@ -736,6 +733,9 @@ fi
 
 
 %changelog
+* Fri May 24 2013 Pádraig Brady <P@draigBrady.com> - 2013.1.1-5
+- Fix inclusion of db migrations
+
 * Tue May 22 2013 Gary Kotton <gkotton@redhat.com> - 2013.1.1-3
 - Updates to work with namespaces
 - Fix kill-metadata rootwrap filter
