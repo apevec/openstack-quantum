@@ -5,7 +5,7 @@
 
 Name:		openstack-quantum
 Version:	2013.1.1
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	OpenStack Networking Service
 
 Group:		Applications/System
@@ -371,7 +371,7 @@ mv %{buildroot}/usr/etc/quantum/* %{buildroot}%{_sysconfdir}/quantum
 chmod 640  %{buildroot}%{_sysconfdir}/quantum/plugins/*/*.ini
 
 # Configure agents to use quantum-rootwrap
-sed -i 's/^root_helper.*/root_helper = sudo quantum-rootwrap \/etc\/quantum\/rootwrap.conf/g' %{buildroot}%{_sysconfdir}/quantum/quantum.conf
+sed -i 's/^# root_helper.*/root_helper = sudo quantum-rootwrap \/etc\/quantum\/rootwrap.conf/g' %{buildroot}%{_sysconfdir}/quantum/quantum.conf
 
 # Configure quantum-dhcp-agent state_path
 sed -i 's/state_path = \/opt\/stack\/data/state_path = \/var\/lib\/quantum/' %{buildroot}%{_sysconfdir}/quantum/dhcp_agent.ini
@@ -733,6 +733,9 @@ fi
 
 
 %changelog
+* Sun May 26 2013 Gary Kotton <gkotton@redhat.com> - 2013.1.1-6
+- Fixes rootwarp path
+
 * Fri May 24 2013 Pádraig Brady <P@draigBrady.com> - 2013.1.1-5
 - Fix inclusion of db migrations
 
