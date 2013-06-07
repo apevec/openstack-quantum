@@ -45,9 +45,6 @@ Source29:	quantum-lbaas-agent.upstart
 # patches_base=2013.1.2
 #
 Patch0001: 0001-use-parallel-installed-versions-in-RHEL6.patch
-Patch0002: 0002-dhcp-agent-make-dnsmasq-tags-work-with-RHEL-6.patch
-Patch0003: 0003-Create-veth-peer-in-namespace.patch
-Patch0004: 0004-Add-kill-metadata-rootwrap-filter-to-support-RHEL.patch
 
 BuildArch:	noarch
 
@@ -307,9 +304,6 @@ networks using multiple other quantum plugins.
 %setup -q -n quantum-%{version}
 
 %patch0001 -p1
-%patch0002 -p1
-%patch0003 -p1
-%patch0004 -p1
 
 sed -i 's/%{version}/%{version}/' PKG-INFO
 

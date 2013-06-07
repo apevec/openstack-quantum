@@ -1,4 +1,4 @@
-From 8fea27bc56455509eb29ee0ea09f7af5813d3da7 Mon Sep 17 00:00:00 2001
+From a62cd977bcf59cfd6b40cfc607364ab698443b85 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?P=C3=A1draig=20Brady?= <P@draigBrady.com>
 Date: Fri, 13 Apr 2012 17:24:40 +0100
 Subject: [PATCH] use parallel installed versions in RHEL6
@@ -7,8 +7,8 @@ of webob sqlalchemy python-routes and paste-deploy
 
 Change-Id: I290f56eae61c87893639a9e5d29f7fff760452cf
 ---
- quantum/__init__.py |   30 ++++++++++++++++++++++++++++++
- 1 files changed, 30 insertions(+), 0 deletions(-)
+ quantum/__init__.py | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/quantum/__init__.py b/quantum/__init__.py
 index 25ce3af..eb5a3fa 100644
