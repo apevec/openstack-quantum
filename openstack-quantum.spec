@@ -1,11 +1,11 @@
 #
-# This is 2013.1 release
+# This is 2013.1.2 release
 #
 %global release_name grizzly
 
 Name:		openstack-quantum
-Version:	2013.1.1
-Release:	6%{?dist}
+Version:	2013.1.2
+Release:	1%{?dist}
 Summary:	OpenStack Networking Service
 
 Group:		Applications/System
@@ -42,7 +42,7 @@ Source19:	quantum-lbaas-agent.init
 Source29:	quantum-lbaas-agent.upstart
 
 #
-# patches_base=2013.1.1
+# patches_base=2013.1.2
 #
 Patch0001: 0001-use-parallel-installed-versions-in-RHEL6.patch
 Patch0002: 0002-dhcp-agent-make-dnsmasq-tags-work-with-RHEL-6.patch
@@ -733,6 +733,9 @@ fi
 
 
 %changelog
+* Fri Jun 07 2013 Terry Wilson <twilson@redhat.com> - 2013.1.2-1
+- Update to grizzly 2013.1.2 release
+
 * Sun May 26 2013 Gary Kotton <gkotton@redhat.com> - 2013.1.1-6
 - Fixes rootwarp path
 
