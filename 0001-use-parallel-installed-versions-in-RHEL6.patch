@@ -7,8 +7,8 @@ of webob sqlalchemy python-routes and paste-deploy
 
 Change-Id: I290f56eae61c87893639a9e5d29f7fff760452cf
 ---
- quantum/__init__.py | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ quantum/__init__.py |   30 ++++++++++++++++++++++++++++++
+ 1 files changed, 30 insertions(+), 0 deletions(-)
 
 diff --git a/quantum/__init__.py b/quantum/__init__.py
 index 25ce3af..eb5a3fa 100644

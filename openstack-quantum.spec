@@ -5,7 +5,7 @@
 
 Name:		openstack-quantum
 Version:	2013.1.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	OpenStack Networking Service
 
 Group:		Applications/System
@@ -45,6 +45,7 @@ Source29:	quantum-lbaas-agent.upstart
 # patches_base=2013.1.2
 #
 Patch0001: 0001-use-parallel-installed-versions-in-RHEL6.patch
+Patch0002: 0002-avoid-code-path-causing-qpid-exchange-leaks.patch
 
 BuildArch:	noarch
 
@@ -304,6 +305,7 @@ networks using multiple other quantum plugins.
 %setup -q -n quantum-%{version}
 
 %patch0001 -p1
+%patch0002 -p1
 
 sed -i 's/%{version}/%{version}/' PKG-INFO
 
@@ -727,6 +729,9 @@ fi
 
 
 %changelog
+* Wed Jul 17 2013 Pádraig Brady <pbrady@redhat.com> - 2013.1.2-2
+- Avoid qpid exchange leaks
+
 * Fri Jun 07 2013 Terry Wilson <twilson@redhat.com> - 2013.1.2-1
 - Update to grizzly 2013.1.2 release
 
