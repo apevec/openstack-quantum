@@ -4,15 +4,16 @@
 %global release_name grizzly
 
 Name:		openstack-quantum
-Version:	2013.1.2
-Release:	2%{?dist}
+Version:	2013.1.3
+Release:	0.1snap%{?dist}
 Summary:	OpenStack Networking Service
 
 Group:		Applications/System
 License:	ASL 2.0
-URL:		http://launchpad.net/quantum/
+URL:		http://launchpad.net/neutron/
 
-Source0:	http://launchpad.net/quantum/%{release_name}/%{version}/+download/quantum-%{version}.tar.gz
+#Source0:	http://launchpad.net/neutron/%{release_name}/%{version}/+download/quantum-%{version}.tar.gz
+Source0:	http://tarballs.openstack.org/neutron/neutron-stable-grizzly.tar.gz
 Source1:	quantum.logrotate
 Source2:	quantum-sudoers
 Source4:	quantum-server-setup
@@ -302,7 +303,8 @@ networks using multiple other quantum plugins.
 
 
 %prep
-%setup -q -n quantum-%{version}
+%setup -q -c quantum-%{version}
+mv quantum-2013.1.3.*.*/* .
 
 %patch0001 -p1
 %patch0002 -p1
